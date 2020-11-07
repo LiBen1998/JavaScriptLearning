@@ -1,1 +1,21 @@
-主要是因为无聊
+虽然一开始我觉得就null和undefined写一篇文章太大惊小怪了，不过考虑了一下其实蛮多东西值得挖掘的：
+
+1.null 和 undefined在现代JS语义里面是有明确区别的：
+
+null 表示一个值被定义了，定义为“空值”；
+undefined 表示根本不存在定义。
+
+所以设置一个值为 null 是合理的，如
+objA.valueA = null;
+但设置一个值为 undefined 是不合理的，如
+objA.valueA = undefined; // 应该直接使用 delete objA.valueA; 任何一个存在引用的变量值为undefined都是一件错误的事情。
+
+这样判断一个值是否存在，就可以用
+objA.valueA === undefined // 不应使用 null 因为 undefined == null，而 null 表示该值定义为空值。
+
+这个语义在JSON规范中被强化，这个标准中不存在 undefined 这个类型，但存在表示空值的 null 。在一些使用广泛的库（比如jQuery）中的深度拷贝函数会忽略 undefined 而不会忽略 null ，也是针对这个语义的理解。
+
+2. JS 中同时存在 undefined 和 null 是合理的。
+首先在 Java 中不存在 undefined 是很合理的：Java 是一个静态类型语言，对于 Java 来说不可能存在一个“不存在”的成员（不存在的话直接就编译失败了），所以只用 null 来表示语义上的空值。而 JavaScript 是一门动态类型语言，成员除了表示存在的空值外，还有可能根本就不存在（因为存不存在只在运行期才知道），所以这就要一个值来表示对某成员的 getter 是取不到值的。
+至于 dart 不存在 null, 最大原因恐怕是 dart 像 java 一样是一个静态类型语言（或者说是一个有编译期静态类型检查的语言，在运行期并不进行类型检查），所以可以不需要设立一个 undefined 这样的类型。
+虽然这两个东西的区别确实会令初学者困扰，但掌握并理解这两个值的语义实际上和理解 prototype/scope 一样是非常重要的。
